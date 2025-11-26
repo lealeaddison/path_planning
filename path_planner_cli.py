@@ -22,6 +22,7 @@ if __name__ == "__main__":
 
     # Construct the graph.
     graph = GridGraph(args.map)
+    
     # Construct the start and goal cells.
     start, goal = Cell(*args.start), Cell(*args.goal)
 

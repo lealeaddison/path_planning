@@ -37,10 +37,14 @@ if __name__ == "__main__":
 
     path = []
     # TODO: Call graph search function and put the result in path.
+    path = a_star_search(graph, start, goal)
+    if not path:
+        print("No path found to the goal!")
+        exit()
 
     # Send the path to the robot.
     print(f"Found path of length {len(path)}. Driving to the goal!")
     robot.drive_path(cells_to_poses(path, graph))
 
-    # Genererate the path file for visualization.
+    # Generate the path file for visualization.
     generate_plan_file(graph, start, goal, path)
