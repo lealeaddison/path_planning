@@ -12,6 +12,7 @@ class Cell(object):
 that here."""
 
 
+
 class GridGraph:
     """Helper class to represent an occupancy grid map as a graph."""
     def __init__(self, file_path=None, width=-1, height=-1, origin=(0, 0),
@@ -46,6 +47,10 @@ class GridGraph:
         self.visited_cells = []  # Stores which cells have been visited in order for visualization.
 
         # TODO: Define any additional member variables to store node data.
+        self.g_score = {}  # Cost from start to current node
+        self.f_score = {}  # Estimated cost from start to goal through current node
+        self.open_set = set()  # Set of all open nodes
+        self.closed_set = set()  # Set of all closed nodes
 
     def as_string(self):
         """Returns the map data as a string for visualization."""
@@ -155,6 +160,8 @@ class GridGraph:
         None if the node has no parent. This function is used to trace back the
         path after graph search."""
         # TODO (P3): Return the parent of the node at the cell.
+        if cell in self.parent:
+            return self.parent[cell]
         return None
 
     def init_graph(self):
@@ -167,6 +174,11 @@ class GridGraph:
         self.visited_cells = []  # Reset visited cells for visualization.
 
         # TODO (P3): Initialize your graph nodes.
+        self.parent = {}
+        self.g_score = {}
+        self.f_score = {}
+        self.open_set = set()
+        self.closed_set = set()
 
     def find_neighbors(self, i, j):
         """Returns a list of the neighbors of the given cell. This should not
@@ -177,4 +189,9 @@ class GridGraph:
         # bounds of the graph.
 
         # HINT: The function is_cell_in_bounds() might come in handy.
+        directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]  # Left, Right, Down, Up
+        for di, dj in directions:
+            ni, nj = i + di, j + dj
+            if self.is_cell_in_bounds(ni, nj):
+                nbrs.append(Cell(ni, nj))
         return nbrs

@@ -33,6 +33,7 @@ def depth_first_search(graph, start, goal):
     graph.init_graph()  # Make sure all the node values are reset.
 
     """TODO (P3): Implement DFS (optional)."""
+            
 
     # If no path was found, return an empty list.
     return []
@@ -48,6 +49,15 @@ def breadth_first_search(graph, start, goal):
     graph.init_graph()  # Make sure all the node values are reset.
 
     """TODO (P3): Implement BFS."""
+    for neighbor in graph.get_neighbors(start):
+        if neighbor not in graph.visited_cells:
+            graph.visited_cells.append(neighbor)
+            if neighbor == goal:
+                return trace_path(goal, graph)
+            result = breadth_first_search(graph, neighbor, goal)
+            if result:
+                return result
+            graph.visited_cells.remove(neighbor)
 
     # If no path was found, return an empty list.
     return []
@@ -63,6 +73,16 @@ def a_star_search(graph, start, goal):
     graph.init_graph()  # Make sure all the node values are reset.
 
     """TODO (P3): Implement A*."""
+    for neighbor in graph.get_neighbors(start):
+        if neighbor not in graph.visited_cells:
+            graph.visited_cells.append(neighbor)
+            if neighbor == goal:
+                return trace_path(goal, graph)
+            result = a_star_search(graph, neighbor, goal)
+            if result:
+                return result
+            graph.visited_cells.remove(neighbor)
+            
 
     # If no path was found, return an empty list.
     return []
