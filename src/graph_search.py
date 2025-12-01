@@ -63,9 +63,9 @@ def breadth_first_search(graph, start, goal):
         if current == goal:
             return trace_path(goal, graph)
         
-        # explore neighbors
+        # explore neighbors and check for collisions
         for neighbor in graph.find_neighbors(current.i, current.j):
-            if neighbor not in visited:
+            if neighbor not in visited and not graph.check_collision(neighbor.i, neighbor.j):
                 visited.add(neighbor)
                 graph.visited_cells.append(neighbor)
                 graph.parent[neighbor] = current # set parent for path tracing
@@ -117,7 +117,7 @@ def a_star_search(graph, start, goal):
 
         # explore neighbors
         for neighbor in graph.find_neighbors(current.i, current.j):
-            if neighbor in visited:
+            if neighbor in visited or graph.check_collision(neighbor.i, neighbor.j):
                 continue
                 
             # calculate tentative score
