@@ -49,15 +49,27 @@ def breadth_first_search(graph, start, goal):
     graph.init_graph()  # Make sure all the node values are reset.
 
     """TODO (P3): Implement BFS."""
-    for neighbor in graph.get_neighbors(start):
-        if neighbor not in graph.visited_cells:
-            graph.visited_cells.append(neighbor)
-            if neighbor == goal:
-                return trace_path(goal, graph)
-            result = breadth_first_search(graph, neighbor, goal)
-            if result:
-                return result
-            graph.visited_cells.remove(neighbor)
+    from collections import deque
+    
+    # initialize the queue with the start cell
+    queue = deque([start])
+    visited = {start}
+    graph.visited_cells.append(start)  
+    
+    while queue:
+        current = queue.popleft()
+        
+        # check if we reached the goal
+        if current == goal:
+            return trace_path(goal, graph)
+        
+        # explore neighbors
+        for neighbor in graph.find_neighbors(current.i, current.j):
+            if neighbor not in visited:
+                visited.add(neighbor)
+                graph.visited_cells.append(neighbor)
+                graph.parent[neighbor] = current # set parent for path tracing
+                queue.append(neighbor)
 
     # If no path was found, return an empty list.
     return []
@@ -73,7 +85,10 @@ def a_star_search(graph, start, goal):
     graph.init_graph()  # Make sure all the node values are reset.
 
     """TODO (P3): Implement A*."""
-    for neighbor in graph.get_neighbors(start):
+    from collections import deque
+    import heapq
+    # initialize the open set with the start cell
+    for neighbor in graph.find_neighbors(current.i, current.j):
         if neighbor not in graph.visited_cells:
             graph.visited_cells.append(neighbor)
             if neighbor == goal:
