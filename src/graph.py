@@ -1,3 +1,6 @@
+# The `GridGraph` class represents an occupancy grid map as a graph, providing methods for loading map
+# data, converting positions to cells, checking collisions, and initializing graph nodes for graph
+# search algorithms.
 import os
 import numpy as np
 
@@ -6,11 +9,23 @@ class Cell(object):
     def __init__(self, i, j):
         self.i = i  # x-axis index (column)
         self.j = j  # y-axis index (row)
-
+        
+    def __eq__(self, other):
+        # check if two Cell objects are equal
+        if not isinstance(other, Cell):
+            return False
+        return self.i == other.i and self.j == other.j
+    
+    def __hash__(self):
+        # define hash function for Cell object to be used in sets and dictionaries
+        return hash((self.i, self.j))
+    
+    def __repr__(self):
+        # define string representation for debugging
+        return f"Cell({self.i}, {self.j})"
 
 """TODO: You may consider defining a class to store your node data. If so, do
 that here."""
-
 
 
 class GridGraph:
@@ -47,10 +62,10 @@ class GridGraph:
         self.visited_cells = []  # Stores which cells have been visited in order for visualization.
 
         # TODO: Define any additional member variables to store node data.
-        self.g_score = {}  # Cost from start to current node
-        self.f_score = {}  # Estimated cost from start to goal through current node
-        self.open_set = set()  # Set of all open nodes
-        self.closed_set = set()  # Set of all closed nodes
+        self.g_score = {}  # cost from start to current node
+        self.f_score = {}  # estimated cost from start to goal through current node
+        self.open_set = set()  # set of all open nodes
+        self.closed_set = set()  # set of all closed nodes
 
     def as_string(self):
         """Returns the map data as a string for visualization."""
@@ -189,7 +204,9 @@ class GridGraph:
         # bounds of the graph.
 
         # HINT: The function is_cell_in_bounds() might come in handy.
-        directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]  # Left, Right, Down, Up
+        # accept cell coordinates of a node and return list of neighboring cell objects
+        directions = [(-1, 0), (1, 0), (0, -1), (0, 1)] # left, right, down, up
+        # check each direction for valid neighbor
         for di, dj in directions:
             ni, nj = i + di, j + dj
             if self.is_cell_in_bounds(ni, nj):

@@ -37,5 +37,9 @@ if __name__ == "__main__":
         print("Invalid option:", args.algo)
         exit()
 
-    # Output the planning file for visualization.
-    generate_plan_file(graph, start, goal, path)
+# debug output
+print(f"Path found: {len(path) > 0}, Length: {len(path)}")
+print("Visited cells:", len(graph.visited_cells))
+
+# Output the planning file for visualization.
+generate_plan_file(graph, start, goal, path)
