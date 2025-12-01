@@ -87,17 +87,57 @@ def a_star_search(graph, start, goal):
     """TODO (P3): Implement A*."""
     from collections import deque
     import heapq
+    
     # initialize the open set with the start cell
-    for neighbor in graph.find_neighbors(current.i, current.j):
-        if neighbor not in graph.visited_cells:
-            graph.visited_cells.append(neighbor)
-            if neighbor == goal:
-                return trace_path(goal, graph)
-            result = a_star_search(graph, neighbor, goal)
-            if result:
-                return result
-            graph.visited_cells.remove(neighbor)
+    # counter allows consistent ordering in the heap
+    
+    counter = 0
+    pq = [(0, counter, start)]
+    counter += 1
+    
+    # initialize g_score and f_score dictionaries
+    graph.g_score[start] = 0
+    graph.f_score[start] = heuristic(start, goal)
+    
+    visited = set()
+    graph.visited_cells.append(start)
+    
+    while pq:
+        _, _, current = heapq.heappop(pq)
+        
+        # skip if already processed
+        if current in visited:
+            continue
+        
+        visited.add(current)
+        
+        # check if goal reached
+        if current == goal:
+            return trace_path(goal, graph)
+
+        # explore neighbors
+        for neighbor in graph.find_neighbors(current.i, current.j):
+            if neighbor in visited:
+                continue
+                
+            # calculate tentative score
+            tentative_g = graph.g_score[current] + 1
+            
+            # if this path to neighbor is better than previous
+            if neighbor not in graph.g_score or tentative_g < graph.g_score[neighbor]:
+                graph.parent[neighbor] = current
+                graph.g_score[neighbor] = tentative_g
+                graph.f_score[neighbor] = tentative_g + heuristic(neighbor, goal)
+
+                if neighbor not in visited:
+                    graph.visited_cells.append(neighbor)
+                    heapq.heappush(pq, (graph.f_score[neighbor], counter, neighbor))
+                    counter += 1
             
 
     # If no path was found, return an empty list.
     return []
+
+def heuristic(cell1, cell2):
+    # manhattan distance for astar
+    return abs(cell1.i - cell2.i) + abs(cell1.j - cell2.j)
